@@ -1,0 +1,39 @@
+filebeat.inputs:
+#- type: container
+#  paths: 
+#    - '/var/lib/docker/containers/*/*.log'
+#- type: docker
+#  containers.ids:
+#    - '74475fccdfd151243b7e5a240e0a106128d412147f6ed76495bf409c31395c43'
+#  containers.stream: all
+
+
+- type: docker
+  combine_partial: true
+  containers:
+    path: "/var/lib/docker/containers"
+    stream: "stdout"
+    ids:
+      - "*"
+
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+- decode_json_fields:
+    fields: ["message"]
+    target: "json"
+    overwrite_keys: true
+
+#setup.kibana:
+#  host: "http://localhost:5601"
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic" 
+  password: "changeme"
+  indices:
+    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+logging.json: true
+logging.metrics.enabled: false
