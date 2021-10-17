@@ -73,7 +73,7 @@ services:
     image: "docker.elastic.co/beats/filebeat:7.15.0"
     user: root
     volumes:
-      - /home/ads/docker-elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -87,7 +87,7 @@ services:
     networks:
       - elk
     volumes:
-      - /home/ads/docker-elk/nginx/html:/usr/share/nginx/html:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
 
 networks:
   elk:
